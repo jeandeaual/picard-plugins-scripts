@@ -1,0 +1,29 @@
+title: French spaces
+script_language_version: "1.1"
+script: |
+  $if($eq(%_releaselanguage%,fra),
+    $set(title,$replace(%title%,« ,« ))
+    $set(album,$replace(%album%,« ,« ))
+    $set(work,$replace(%work%,« ,« ))
+    $set(title,$replace(%title%,<< ,« ))
+    $set(album,$replace(%album%,<< ,« ))
+    $set(work,$replace(%work%,<< ,« ))
+    $set(title,$replace(%title%, », »))
+    $set(album,$replace(%album%, », »))
+    $set(work,$replace(%work%, », »))
+    $set(title,$replace(%title%, >>, »))
+    $set(album,$replace(%album%, >>, »))
+    $set(work,$replace(%work%, >>, »))
+    $set(title,$replace(%title%, ?, ?))
+    $set(album,$replace(%album%, ?, ?))
+    $set(work,$replace(%work%, ?, ?))
+    $set(title,$replace(%title%, !, !))
+    $set(album,$replace(%album%, !, !))
+    $set(work,$replace(%work%, !, !))
+    $set(title,$replace(%title%, :, :))
+    $set(album,$replace(%album%, :, :))
+    $set(work,$replace(%work%, :, :))
+    $set(title,$replace(%title%, ;, ;))
+    $set(album,$replace(%album%, ;, ;))
+    $set(work,$replace(%work%, ;, ;)))
+id: 6899b9d2-2531-439e-94b7-220557011887

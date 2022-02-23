@@ -1,0 +1,8 @@
+title: Set album sort name
+script_language_version: "1.1"
+script: |
+  $if($not(%albumsort%),
+    $if($or($startswith(%album%,L'),$startswith(%album%,L’)),
+      $set(albumsort,$substr(%album%,2,)\, L’),
+      $set(albumsort,$swapprefix(%album%,A,An,The,La,Le,Les,Un,Une)))))
+id: c83ce013-65d8-48e8-b4f5-eaede8ed2db3

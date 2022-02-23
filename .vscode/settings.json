@@ -1,0 +1,13 @@
+{
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.ptsp": "yaml"
+  },
+  "python.linting.flake8Args": ["--config=.flake8"],
+  "python.formatting.provider": "black",
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  }
+}

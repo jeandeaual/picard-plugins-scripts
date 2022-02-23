@@ -1,0 +1,4 @@
+overrides:
+  - files: "*.ptsp"
+    options:
+      parser: yaml

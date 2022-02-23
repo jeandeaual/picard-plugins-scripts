@@ -1,0 +1,25 @@
+title: Typographic apostrophes
+script_language_version: "1.1"
+script: |
+  $set(title,$replace(%title%,j',j’))
+  $set(album,$replace(%album%,j',j’))
+  $set(work,$replace(%work%,j',j’))
+  $set(title,$replace(%title%,J',J’))
+  $set(album,$replace(%album%,J',J’))
+  $set(work,$replace(%work%,J',J’))
+  $set(title,$replace(%title%,l',l’))
+  $set(album,$replace(%album%,l',l’))
+  $set(work,$replace(%work%,l',l’))
+  $set(title,$replace(%title%,L',L’))
+  $set(album,$replace(%album%,L',L’))
+  $set(work,$replace(%work%,L',L’))
+  $set(title,$replace(%title%,y',y’))
+  $set(album,$replace(%album%,y',y’))
+  $set(work,$replace(%work%,y',y’))
+  $set(title,$replace(%title%,Y',Y’))
+  $set(album,$replace(%album%,Y',Y’))
+  $set(work,$replace(%work%,Y',Y’))
+  $set(title,$replace(%title%,'s,’s))
+  $set(album,$replace(%album%,'s,’s))
+  $set(work,$replace(%work%,'s,’s))
+id: 7a1707df-4517-4379-ae6d-6fb088016259

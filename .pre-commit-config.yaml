@@ -1,0 +1,46 @@
+# Pre-commit config, see: https://pre-commit.com/
+repos:
+  # Automatic style formatter for various file types, including:
+  #  JS, JSX, JSON, CSS, HTML and markdown
+  # See `.prettierrc.json` for configuration
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v2.5.1"
+    hooks:
+      - id: prettier
+        stages: [commit]
+  # Python import sorter
+  # See `tool.isort` section of `pyproject.toml` for configuration
+  - repo: https://github.com/PyCQA/isort
+    rev: "5.10.1"
+    hooks:
+      - id: isort
+  # Automatic style formatter for python
+  # See the `tool.black` section of `pyproject.toml` for configuration
+  - repo: https://github.com/psf/black
+    rev: "21.12b0"
+    hooks:
+      - id: black
+  # Python style guide enforcer and extensions
+  # See `flake8` section of `setup.cfg` for configuration
+  - repo: https://github.com/PyCQA/flake8
+    rev: "4.0.1"
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-absolute-import==1.0.0.1
+          - flake8-bandit==2.1.2
+          - flake8-broken-line==0.4.0
+          - flake8-bugbear==21.11.29
+          - flake8-builtins==1.5.3
+          - flake8-comprehensions==3.8.0
+          - flake8-debugger==4.0.0
+          - flake8-docstrings==1.6.0
+          - flake8-eradicate==1.2.0
+          - flake8-isort==4.1.1
+          - flake8-logging-format==0.6.0
+          - flake8-mutable==1.2.0
+          - flake8-pep3101==1.3.0
+          - flake8-polyfill==1.0.2
+          - flake8-quotes==3.3.1
+          - flake8-simplify==0.14.5
+          - flake8-string-format==0.3.0

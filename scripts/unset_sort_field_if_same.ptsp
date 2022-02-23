@@ -1,0 +1,7 @@
+title: Unset sort field if same
+script_language_version: "1.1"
+script: |
+  $if($eq(%artist%,%artistsort%),$delete(artistsort))
+  $if($eq(%albumartist%,%albumartistsort%),$delete(albumartistsort))
+  $if($eq(%composer%,%composersort%),$delete(composersort))
+id: 61db9c07-420e-49bd-bea5-b6e42497ddf9

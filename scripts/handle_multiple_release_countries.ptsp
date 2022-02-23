@@ -1,0 +1,5 @@
+title: Handle multiple release countries
+script_language_version: "1.1"
+script: |
+  $if($gte($lenmulti(%_releasecountries%),10),$set(releasecountry,[Worldwide]))
+id: 6bc79479-84be-465b-ba8a-7059307960e6

@@ -1,0 +1,5 @@
+title: Set track number for vinyl
+script_language_version: "1.1"
+script: |
+  $if($ne(%tracknumber%,%_musicbrainz_tracknumber%),$set(realtracknumber,%_musicbrainz_tracknumber%))
+id: ac9733e1-026e-44c7-b5b9-10c4bdf6f91f

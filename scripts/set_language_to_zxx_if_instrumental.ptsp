@@ -1,0 +1,5 @@
+title: Set language to zxx if instrumental
+script_language_version: "1.1"
+script: |
+  $if($inmulti(%_performance_attributes%,instrumental),$set(language,zxx))
+id: d1b2acbe-faa3-417a-bea9-c59028ddfb2f
