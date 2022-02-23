@@ -1,6 +1,6 @@
 """Separate multiple catalog numbers per medium."""
 
-import re
+from re import split as re_split
 from typing import Any, Dict, List
 
 from picard import log
@@ -63,7 +63,7 @@ def separate_catalog_numbers(
             return
 
         try:
-            low, high = re.split(_SPLIT_REGEX, suffix)
+            low, high = re_split(_SPLIT_REGEX, suffix)
         except ValueError:
             log.debug("Single catalog number, skipping %s", title)
             return
