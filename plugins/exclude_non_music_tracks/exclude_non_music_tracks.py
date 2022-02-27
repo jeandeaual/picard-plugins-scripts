@@ -1,7 +1,7 @@
 """Exclude non-music tracks from disc and track count."""
 
 from collections import defaultdict
-from typing import Any, Dict, Set
+from typing import Any, DefaultDict, Dict, Set
 
 from picard import log
 from picard.album import Album
@@ -35,9 +35,11 @@ PLUGIN_LICENSE_URL = "https://www.gnu.org/licenses/gpl-2.0.html"
 class ExcludeNonMusicTracks:
     """MusicBrainz Picard plugin."""
 
-    def __init__(self):
-        self.media_to_skip: Set[int] = set()
-        self.non_music_tracks: defaultdict[int, Set[int]] = defaultdict(set)
+    def __init__(self) -> None:
+        self.media_to_skip: DefaultDict[str, Set[int]] = defaultdict(set)
+        self.non_music_tracks: DefaultDict[
+            str, DefaultDict[int, Set[int]]
+        ] = defaultdict(lambda: defaultdict(set))
 
     def parse_release(
         self,
@@ -46,32 +48,33 @@ class ExcludeNonMusicTracks:
         release: Dict[str, Any],
     ) -> None:
         """Album metadata processor."""
-        self.media_to_skip = set()
-        self.non_music_tracks = defaultdict(set)
-
         media_count: int = 0
 
         try:
+            album_id: str = metadata["musicbrainz_albumid"]
+            media_to_skip = self.media_to_skip[album_id]
+            non_music_tracks = self.non_music_tracks[album_id]
+
             for medium in release["media"]:
                 medium_pos: int = medium["position"]
 
                 if medium["format"] == "DVD-Video":
-                    self.media_to_skip.add(medium_pos)
+                    media_to_skip.add(medium_pos)
                     continue
 
                 for track in medium["tracks"]:
                     if track["recording"]["video"]:
                         track_pos: int = track["position"]
-                        self.non_music_tracks[medium_pos].add(track_pos)
+                        non_music_tracks[medium_pos].add(track_pos)
 
                 track_count: int = medium["track-count"]
 
                 if (
-                    medium_pos in self.non_music_tracks
-                    and len(self.non_music_tracks[medium_pos]) == track_count
+                    medium_pos in non_music_tracks
+                    and len(non_music_tracks[medium_pos]) == track_count
                 ):
-                    self.media_to_skip.add(medium_pos)
-                    del self.non_music_tracks[medium_pos]
+                    media_to_skip.add(medium_pos)
+                    del non_music_tracks[medium_pos]
                     continue
 
                 media_count += 1
@@ -89,19 +92,24 @@ class ExcludeNonMusicTracks:
         _release: Dict[str, Any],
     ) -> None:
         """Track metadata processor."""
-        if not self.media_to_skip and not self.non_music_tracks:
-            return
-
         try:
+            album_id: str = metadata["musicbrainz_albumid"]
+
+            if (
+                album_id not in self.media_to_skip
+                or album_id not in self.non_music_tracks
+            ):
+                return
+
             title: str = metadata["title"]
             discnumber = int(metadata["discnumber"])
 
-            if discnumber in self.media_to_skip:
+            if discnumber in self.media_to_skip[album_id]:
                 return
 
             disc_skip: int = 0
             for disc in range(1, discnumber + 1):
-                if disc in self.media_to_skip:
+                if disc in self.media_to_skip[album_id]:
                     disc_skip += 1
 
             new_discnumber = discnumber - disc_skip
@@ -115,24 +123,31 @@ class ExcludeNonMusicTracks:
 
             metadata["discnumber"] = new_discnumber
 
-            tracknumber = int(metadata["tracknumber"])
+            if discnumber in self.non_music_tracks[album_id]:
+                tracks_to_skip = self.non_music_tracks[album_id][discnumber]
+                tracknumber = int(metadata["tracknumber"])
+                totaltracks = int(metadata["totaltracks"])
+                track_skip = 0
 
-            if discnumber in self.non_music_tracks:
-                track_skip: int = 0
                 for track in range(1, tracknumber + 1):
-                    if track in self.non_music_tracks[discnumber]:
+                    if track in tracks_to_skip:
                         track_skip += 1
 
                 new_tracknumber = tracknumber - track_skip
+                new_totaltracks = totaltracks - len(tracks_to_skip)
 
                 log.debug(
-                    "Changing track number from %d to %d for %s",
+                    "Changing track number from %d to %d "
+                    "and total tracks from %d to %d for %s",
                     tracknumber,
                     new_tracknumber,
+                    totaltracks,
+                    new_totaltracks,
                     title,
                 )
 
                 metadata["tracknumber"] = new_tracknumber
+                metadata["totaltracks"] = new_totaltracks
         except (KeyError, ValueError) as e:
             log.error("Error when setting the track count: %s", e)
 
