@@ -1,10 +1,15 @@
 """Album / track / show swap sort."""
 
 from re import match as re_match
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Iterable, Tuple
 
+from picard import log
 from picard.album import Album
-from picard.metadata import Metadata, register_track_metadata_processor
+from picard.metadata import (
+    Metadata,
+    register_album_metadata_processor,
+    register_track_metadata_processor,
+)
 from picard.plugin import PluginPriority
 from picard.script import ScriptParser, register_script_function
 
@@ -26,40 +31,50 @@ PLUGIN_LICENSE = "GPL-2.0-or-later"
 PLUGIN_LICENSE_URL = "https://www.gnu.org/licenses/gpl-2.0.html"
 
 _SET_IF_SAME = False
-_DEFAULT_PREFIXES = (
+_DEFAULT_PREFIXES: Dict[str, Tuple[str, ...]] = {
     # English
-    "A ",
-    "The ",
+    "eng": (
+        "A ",
+        "The ",
+    ),
     # French
-    "Un ",
-    "Une ",
-    "Des ",
-    "Le ",
-    "La ",
-    "L'",
-    "L’",
+    "fra": (
+        "Un ",
+        "Une ",
+        "Des ",
+        "Le ",
+        "La ",
+        "L'",
+        "L’",
+    ),
     # Spanish
-    "Una ",
-    "Unos ",
-    "Unas",
-    "El ",
-    "Los ",
-    "Las ",
+    "spa": (
+        "Una ",
+        "Unos ",
+        "Unas",
+        "El ",
+        "Los ",
+        "Las ",
+    ),
     # Italian
-    "Uno ",
-    "Un'",
-    "Un’",
-    "Il ",
-    "Lo ",
-    "I ",
-    "Gli ",
+    "ita": (
+        "Uno ",
+        "Un'",
+        "Un’",
+        "Il ",
+        "Lo ",
+        "I ",
+        "Gli ",
+    ),
     # German
-    "Der ",
-    "Die ",
-    "Das ",
-    "Ein ",
-    "Eine ",
-)
+    "ger": (
+        "Der ",
+        "Die ",
+        "Das ",
+        "Ein ",
+        "Eine ",
+    ),
+}
 
 
 def delete_prefix(
@@ -72,14 +87,18 @@ def delete_prefix(
     Returns remaining string and deleted part separately.
     """
     if not prefixes:
-        prefixes = _DEFAULT_PREFIXES
+        prefixes = (
+            _DEFAULT_PREFIXES["eng"]
+            + _DEFAULT_PREFIXES["fra"]
+            + _DEFAULT_PREFIXES["spa"]
+        )
     text = text.strip()
-    rx = (
+    regex = (
         "("
         + ")|(".join(map(lambda prefix: prefix.replace(" ", r"\s+"), prefixes))
         + ")"
     )
-    match = re_match(rx, text)
+    match = re_match(regex, text)
     if not match:
         return text, ""
 
@@ -102,26 +121,50 @@ def swap_prefix(parser: ScriptParser, text: str, *prefixes: str) -> str:
     return text
 
 
-def swap_sort_album_track(
+def swap_sort_tags(metadata: Metadata, tags: Iterable[str]):
+    """Swap the prefix of `tags` to set the corresponding sort fields."""
+    language = metadata["~releaselanguage"]
+
+    if language != "eng" and language in _DEFAULT_PREFIXES:
+        prefixes = _DEFAULT_PREFIXES[language] + _DEFAULT_PREFIXES["eng"]
+    else:
+        # Use the defaults
+        prefixes = ()
+
+    for tag in tags:
+        if tag not in metadata:
+            continue
+
+        value: str = metadata[tag]
+        swapped = swap_prefix(None, value, *prefixes)
+
+        if swapped != value or _SET_IF_SAME:
+            sort_tag = f"{tag}sort"
+            log.debug("Setting %s to %s", sort_tag, swapped)
+            metadata[sort_tag] = swapped
+
+
+def swap_sort_album(
+    _tagger: Album,
+    metadata: Metadata,
+    _release: Dict[str, Any],
+) -> None:
+    """Swap the prefix of the `album` fields to set the `albumsort` field."""
+    swap_sort_tags(metadata, ["album"])
+
+
+def swap_sort_track(
     _tagger: Album,
     metadata: Metadata,
     _track: Dict[str, Any],
     _release: Dict[str, Any],
 ) -> None:
-    """Set `titlesort`, `albumsort` and `showsort`.
+    """Set `titlesort` and `showsort`.
 
-    Swap the prefix of the `title`, `album` and `show` fields to set the
-    corresponding sort fields.
+    Swap the prefix of the `title` and `show` fields to set the corresponding
+    sort fields.
     """
-    for tag in ["title", "album", "show"]:
-        if tag not in metadata:
-            continue
-
-        value: str = metadata[tag]
-        swapped = swap_prefix(None, value)
-
-        if swapped != value or _SET_IF_SAME:
-            metadata[f"{tag}sort"] = swapped
+    swap_sort_tags(metadata, ["title", "show"])
 
 
 register_script_function(
@@ -129,4 +172,5 @@ register_script_function(
     name="swapprefixext",
     check_argcount=False,
 )
-register_track_metadata_processor(swap_sort_album_track, PluginPriority.HIGH)
+register_album_metadata_processor(swap_sort_album, PluginPriority.HIGH)
+register_track_metadata_processor(swap_sort_track, PluginPriority.HIGH)

@@ -2,10 +2,9 @@
 
 from collections import defaultdict
 from functools import partial
-from typing import Any, Dict, List
+from typing import Any, DefaultDict, Dict, List
 
 from PyQt5.QtNetwork import QNetworkReply
-
 from picard import log
 from picard.album import Album
 from picard.metadata import (
@@ -38,9 +37,9 @@ class TransliterationSort:
 
     SCRIPT = "Latn"
 
-    def __init__(self):
-        self.tracks: defaultdict[
-            str, defaultdict[int, defaultdict[int, Dict[str, str]]]
+    def __init__(self) -> None:
+        self.tracks: DefaultDict[
+            str, DefaultDict[int, DefaultDict[int, Dict[str, str]]]
         ] = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
 
     def transliterated_release_dl_callback(

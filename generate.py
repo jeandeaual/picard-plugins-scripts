@@ -142,6 +142,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--build-dir",
         default="build",
+        type=Path,
         help="path for the build output",
     )
     parser.add_argument(
@@ -158,7 +159,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    dest_dir = Path(__file__).parent / args.build_dir
+    dest_dir: Path = args.build_dir
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     if args.json:
