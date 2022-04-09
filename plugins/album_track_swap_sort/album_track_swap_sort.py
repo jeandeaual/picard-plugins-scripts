@@ -121,7 +121,7 @@ def swap_prefix(parser: ScriptParser, text: str, *prefixes: str) -> str:
     return text
 
 
-def swap_sort_tags(metadata: Metadata, tags: Iterable[str]):
+def swap_sort_tags(metadata: Metadata, tags: Iterable[str]) -> None:
     """Swap the prefix of `tags` to set the corresponding sort fields."""
     language = metadata["~releaselanguage"]
 

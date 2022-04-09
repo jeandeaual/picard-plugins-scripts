@@ -1,3 +1,8 @@
 [flake8]
+exclude =
+    __pycache__
+    .venv
 ignore = D107,D403,W503
-inline-quotes = "
+inline-quotes = '"'
+per-file-ignores =
+    tests/*: D100,D101,D102,D103,S101

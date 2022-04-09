@@ -50,6 +50,9 @@ docs/_build/
 profile_default/
 ipython_config.py
 
+# isort
+*.isorted
+
 # Environments
 .env
 .venv

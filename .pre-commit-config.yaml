@@ -1,46 +1,58 @@
-# Pre-commit config, see: https://pre-commit.com/
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+fail_fast: true
 repos:
-  # Automatic style formatter for various file types, including:
-  #  JS, JSX, JSON, CSS, HTML and markdown
-  # See `.prettierrc.json` for configuration
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: check-yaml
+        name: Check YAML
+      - id: check-added-large-files
+        name: Check for added large files
+  # Automatic style formatter for various file types
+  # See `.prettierrc.yaml` for configuration
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v2.5.1"
+    rev: v2.5.1
     hooks:
       - id: prettier
-        stages: [commit]
-  # Python import sorter
-  # See `tool.isort` section of `pyproject.toml` for configuration
-  - repo: https://github.com/PyCQA/isort
-    rev: "5.10.1"
-    hooks:
-      - id: isort
-  # Automatic style formatter for python
+        name: Prettier
+  # Automatic style formatter for Python
   # See the `tool.black` section of `pyproject.toml` for configuration
-  - repo: https://github.com/psf/black
-    rev: "21.12b0"
+  - repo: local
     hooks:
       - id: black
-  # Python style guide enforcer and extensions
-  # See `flake8` section of `setup.cfg` for configuration
-  - repo: https://github.com/PyCQA/flake8
-    rev: "4.0.1"
+        name: Black
+        entry: poetry run black .
+        language: system
+        pass_filenames: false
+  # Python import sorter
+  # See `tool.isort` section of `pyproject.toml` for configuration
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: poetry run isort .
+        language: system
+        pass_filenames: false
+  # Python style guide enforcer
+  # See `.flake8` for configuration
+  - repo: local
     hooks:
       - id: flake8
-        additional_dependencies:
-          - flake8-absolute-import==1.0.0.1
-          - flake8-bandit==2.1.2
-          - flake8-broken-line==0.4.0
-          - flake8-bugbear==21.11.29
-          - flake8-builtins==1.5.3
-          - flake8-comprehensions==3.8.0
-          - flake8-debugger==4.0.0
-          - flake8-docstrings==1.6.0
-          - flake8-eradicate==1.2.0
-          - flake8-isort==4.1.1
-          - flake8-logging-format==0.6.0
-          - flake8-mutable==1.2.0
-          - flake8-pep3101==1.3.0
-          - flake8-polyfill==1.0.2
-          - flake8-quotes==3.3.1
-          - flake8-simplify==0.14.5
-          - flake8-string-format==0.3.0
+        name: Flake8
+        entry: poetry run flake8
+        language: system
+        pass_filenames: false
+  # Python static type checker
+  # See `tool.mypy` section of `pyproject.toml` for configuration
+  - repo: local
+    hooks:
+      - id: mypy
+        name: Mypy
+        entry: poetry run mypy .
+        language: system
+        pass_filenames: false

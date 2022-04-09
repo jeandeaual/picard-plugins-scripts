@@ -12,7 +12,7 @@ from pathlib import Path
 from platform import system
 from sys import exit, stderr
 
-from plugins import create_zip, get_plugin_dirs, rm_path
+from lib import create_zip, get_plugin_dirs, rm_path
 
 
 def path_from_env(variable: str, default: Path) -> Path:

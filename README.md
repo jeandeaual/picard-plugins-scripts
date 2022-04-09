@@ -1,5 +1,7 @@
 # MusicBrainz Picard Plugins and Scripts
 
+[![Test](https://github.com/jeandeaual/picard-plugins-scripts/actions/workflows/test.yaml/badge.svg)](https://github.com/jeandeaual/picard-plugins-scripts/actions/workflows/test.yaml)
+
 This repository hosts plugins for [MusicBrainz Picard](https://picard.musicbrainz.org/).
 
 ## Development Notes

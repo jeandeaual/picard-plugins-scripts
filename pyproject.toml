@@ -1,3 +1,41 @@
+[tool.poetry]
+name = "picard-plugins"
+version = "1.0.0"
+description = "MusicBrainz Picard plugins."
+authors = ["Alexis Jeandeau <alexis.jeandeau@gmail.com>"]
+
+[tool.poetry.dependencies]
+# Base dependencies
+python = "^3.6.2"
+picard = "~2.7"
+# Test dependencies
+mock = "^4.0.3"
+pytest = "^7.0.1"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.6.1"
+iso639-lang = "^2.0.1"
+
+[tool.poetry.dev-dependencies]
+# Formatting and linting tools
+pre-commit = "^2.17"
+black = "^22.3.0"
+isort = "^5.10.1"
+flake8 = "^4.0.1"
+flake8-absolute-import = "^1.0.0"
+flake8-bandit = "^2.1.2"
+flake8-broken-line = "^0.4.0"
+flake8-bugbear = "^22.1.11"
+flake8-builtins = "^1.5.3"
+flake8-debugger = "^4.0.0"
+flake8-docstrings = "^1.6.0"
+flake8-eradicate = "^1.2.0"
+flake8-logging-format = "^0.6.0"
+flake8-mutable = "^1.2.0"
+flake8-pep3101 = "^1.3.0"
+flake8-polyfill = "^1.0.2"
+flake8-simplify = "^0.18.1"
+mypy = "^0.931"
+
 [tool.black]
 line-length = 79
 target-version = ['py36']
@@ -13,12 +51,44 @@ exclude = '''
 profile = "black"
 line_length = 79
 indent = "    "
-
 default_section = "THIRDPARTY"
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
-no_lines_before = ["LOCALFOLDER"]
+no_lines_before = []
 multi_line_output = 3
 lines_after_imports = 2
 include_trailing_comma = true
 force_sort_within_sections = true
 combine_as_imports = true
+
+[tool.mypy]
+follow_imports = "silent"
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pydocstyle]
+inherit = false
+add_select = "D212"
+add_ignore = "D107,D403"
+
+[tool.coverage.run]
+branch = true
+source = ["."]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+mock_use_standalone_module = true
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

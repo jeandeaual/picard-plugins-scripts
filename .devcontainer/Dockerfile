@@ -9,15 +9,20 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 
 # hadolint ignore=DL3008
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends gettext \
+    && apt-get -y install --no-install-recommends \
+    # Required to build python-picard
+    gettext \
+    # Required by PyQt5
+    libgl1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 --disable-pip-version-check --no-cache-dir install \
-        picard==2.7.3 \
-        pre-commit==2.17.0 \
-        black==21.12b0 \
-        isort==5.10.1 \
-    && rm -rf /tmp/pip-tmp
+USER vscode
 
-RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g prettier@2.5.1" 2>&1
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.1.13 python -
+
+# Install prettier
+RUN npm install -g prettier@2.5.1

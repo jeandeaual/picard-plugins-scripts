@@ -18,7 +18,7 @@ from pathlib import Path, PurePosixPath
 from sys import stderr
 from typing import Dict, Union
 
-from plugins import create_zip, get_plugin_dirs
+from lib import create_zip, get_plugin_dirs
 
 
 # The file that contains json data

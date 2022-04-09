@@ -14,7 +14,9 @@ def get_plugin_dirs() -> List[Path]:
     return [
         path
         for path in PLUGIN_DIR.iterdir()
-        if path.is_dir() and path.name != ".git"
+        if path.is_dir()
+        and not path.name.startswith(".")
+        and not path.name.startswith("__")
     ]
 
 
