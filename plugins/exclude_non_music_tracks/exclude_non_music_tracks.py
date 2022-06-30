@@ -27,6 +27,7 @@ PLUGIN_API_VERSIONS = [
     "2.5",
     "2.6",
     "2.7",
+    "2.8",
 ]
 PLUGIN_LICENSE = "GPL-2.0-or-later"
 PLUGIN_LICENSE_URL = "https://www.gnu.org/licenses/gpl-2.0.html"
