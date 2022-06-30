@@ -15,22 +15,13 @@
     }
   },
 
-  // Set *default* container specific settings.json values on container create.
-  "settings": {
-    "python.defaultInterpreterPath": "/usr/local/bin/python",
-    "python.formatting.blackPath": "/home/vscode/.local/bin/black",
-    "python.linting.banditPath": "/home/vscode/.local/bin/bandit",
-    "python.linting.flake8Path": "/home/vscode/.local/bin/flake8",
-    "python.linting.mypyPath": "/home/vscode/.local/bin/mypy",
-    "python.linting.pycodestylePath": "/home/vscode/.local/bin/pycodestyle",
-    "python.linting.pydocstylePath": "/home/vscode/.local/bin/pydocstyle"
-  },
-
   "remoteUser": "vscode",
 
   "remoteEnv": {
+    // Add Poetry to the PATH
     "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin",
-    "POETRY_VIRTUALENVS_CREATE": "false"
+    // Force the creation of a virtual environment by Poetry
+    "POETRY_VIRTUALENVS_CREATE": "true"
   },
 
   "postCreateCommand": "poetry install --no-root",
@@ -40,6 +31,7 @@
   "extensions": [
     "ms-python.python",
     "ms-python.vscode-pylance",
+    "ms-python.black-formatter",
     "tamasfe.even-better-toml",
     "redhat.vscode-yaml",
     "esbenp.prettier-vscode",
