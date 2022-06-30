@@ -56,3 +56,12 @@ repos:
         entry: poetry run mypy .
         language: system
         pass_filenames: false
+  # YAML linter
+  # See `.yamllint.yaml` for configuration
+  - repo: local
+    hooks:
+      - id: yamllint
+        name: yamllint
+        entry: poetry run yamllint -s .
+        language: system
+        pass_filenames: false

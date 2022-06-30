@@ -1,0 +1,26 @@
+extends: default
+
+yaml-files:
+  - "*.yaml"
+  - "*.yml"
+  - "*.ptsp"
+  - .yamllint
+
+ignore: |
+  .git/
+  .venv/
+
+rules:
+  comments:
+    min-spaces-from-content: 1
+  document-start:
+    present: false
+  document-end:
+    present: false
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  quoted-strings:
+    quote-type: double
+    required: false
+  truthy: disable
